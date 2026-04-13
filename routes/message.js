@@ -6,7 +6,7 @@ import Message from '../models/Message.js';
 
 const router = express.Router();
 
-const upload = multer({ dest: 'uploads/messages/' });
+const upload = multer({ dest: '/tmp/messages/' });
 
 router.post('/send', adminAuth, upload.single('file'), sendMessage);
 router.get('/user', auth, getUserMessages);
