@@ -46,8 +46,9 @@ app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.redirect('/dashboard');
 });
+
 
 // Error handling
 app.use((err, req, res, next) => {

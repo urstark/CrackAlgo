@@ -12,44 +12,51 @@
         <div class="nav-container">
             <h1 class="nav-title">Project Dashboard</h1>
             <div class="nav-links">
-                <span>Welcome, <%= user.username %></span>
-                <a href="/logout">Logout</a>
+                <% if (user) { %>
+                    <span>Welcome, <%= user.username %></span>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <span>Welcome, Guest</span>
+                    <a href="/login">Login</a>
+                <% } %>
             </div>
         </div>
     </nav>
 
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h2>My Dashboard</h2>
+            <h2><%= user ? 'My Dashboard' : 'Public Dashboard' %></h2>
         </div>
 
         <div class="dashboard-grid">
-            <!-- Upload Section -->
-            <div class="dashboard-card">
-                <h3>Upload Files</h3>
-                
-                <div class="upload-section">
-                    <h4>Upload Project</h4>
-                    <form action="/upload/project" method="POST" enctype="multipart/form-data" class="upload-form">
-                        <input type="file" name="file" required>
-                        <input type="hidden" name="fileType" value="project">
-                        <button type="submit">Upload Project</button>
-                    </form>
-                </div>
+            <!-- Upload Section - Visible only to logged in users -->
+            <% if (user) { %>
+                <div class="dashboard-card">
+                    <h3>Upload Files</h3>
+                    
+                    <div class="upload-section">
+                        <h4>Upload Project</h4>
+                        <form action="/upload/project" method="POST" enctype="multipart/form-data" class="upload-form">
+                            <input type="file" name="file" required>
+                            <input type="hidden" name="fileType" value="project">
+                            <button type="submit">Upload Project</button>
+                        </form>
+                    </div>
 
-                <div class="upload-section">
-                    <h4>Upload Media</h4>
-                    <form action="/upload/media" method="POST" enctype="multipart/form-data" class="upload-form">
-                        <input type="file" name="file" accept="image/*,video/*" required>
-                        <input type="hidden" name="fileType" value="media">
-                        <button type="submit">Upload Media</button>
-                    </form>
+                    <div class="upload-section">
+                        <h4>Upload Media</h4>
+                        <form action="/upload/media" method="POST" enctype="multipart/form-data" class="upload-form">
+                            <input type="file" name="file" accept="image/*,video/*" required>
+                            <input type="hidden" name="fileType" value="media">
+                            <button type="submit">Upload Media</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            <% } %>
 
-            <!-- My Uploads -->
+            <!-- Repository / Uploads -->
             <div class="dashboard-card">
-                <h3>My Uploads</h3>
+                <h3><%= user ? 'My Uploads' : 'Explore Projects & Media' %></h3>
                 <div class="uploads-list">
                     <% if (uploads && uploads.length > 0) { %>
                         <% uploads.forEach(upload => { %>
@@ -58,6 +65,9 @@
                                     <strong><%= upload.originalName %></strong>
                                     <span class="upload-type"><%= upload.fileType %></span>
                                     <span class="upload-date"><%= upload.createdAt.toLocaleDateString() %></span>
+                                    <% if (!user && upload.userId) { %>
+                                        <span class="upload-author">by <%= upload.userId.username %></span>
+                                    <% } %>
                                 </div>
                                 
                                 <!-- Media Preview -->
@@ -86,32 +96,35 @@
                 </div>
             </div>
 
-            <!-- Messages from Admin -->
-            <div class="dashboard-card">
-                <h3>Messages from Admin</h3>
-                <div class="messages-list">
-                    <% if (messages && messages.length > 0) { %>
-                        <% messages.forEach(message => { %>
-                            <div class="message-item">
-                                <div class="message-header">
-                                    <strong>From: <%= message.senderId.username %></strong>
-                                    <span class="message-date"><%= message.createdAt.toLocaleDateString() %></span>
-                                </div>
-                                <div class="message-content">
-                                    <%= message.message %>
-                                </div>
-                                <% if (message.file) { %>
-                                    <div class="message-file">
-                                        <a href="/<%= message.file %>" target="_blank">View Attachment</a>
+            <!-- Messages - Visible only to logged in users -->
+            <% if (user) { %>
+                <div class="dashboard-card">
+                    <h3>Messages from Admin</h3>
+                    <div class="messages-list">
+                        <% if (messages && messages.length > 0) { %>
+                            <% messages.forEach(message => { %>
+                                <div class="message-item">
+                                    <div class="message-header">
+                                        <strong>From: <%= message.senderId.username %></strong>
+                                        <span class="message-date"><%= message.createdAt.toLocaleDateString() %></span>
                                     </div>
-                                <% } %>
-                            </div>
-                        <% }) %>
-                    <% } else { %>
-                        <p class="no-data">No messages yet</p>
-                    <% } %>
+                                    <div class="message-content">
+                                        <%= message.message %>
+                                    </div>
+                                    <% if (message.file) { %>
+                                        <div class="message-file">
+                                            <a href="/<%= message.file %>" target="_blank">View Attachment</a>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="no-data">No messages yet</p>
+                        <% } %>
+                    </div>
                 </div>
-            </div>
+            <% } %>
+
         </div>
     </div>
 </body>

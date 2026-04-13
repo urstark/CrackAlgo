@@ -1,14 +1,15 @@
 import express from 'express';
-import { auth } from '../middleware/auth.js';
+import { optionalAuth } from '../middleware/auth.js';
+
 import User from '../models/User.js';
 import Upload from '../models/Upload.js';
 import Message from '../models/Message.js';
 
 const router = express.Router();
 
-router.get('/', auth, async (req, res) => {
+router.get('/', optionalAuth, async (req, res) => {
   try {
-    if (req.user.isAdmin) {
+    if (req.user && req.user.isAdmin) {
       const users = await User.find({ isAdmin: false });
       const uploads = await Upload.find().populate('userId', 'username email');
       const messages = await Message.find().populate('senderId receiverId', 'username');
@@ -19,7 +20,7 @@ router.get('/', auth, async (req, res) => {
         uploads, 
         messages 
       });
-    } else {
+    } else if (req.user) {
       const uploads = await Upload.find({ userId: req.user._id });
       const messages = await Message.find({ receiverId: req.user._id })
         .populate('senderId', 'username');
@@ -29,10 +30,23 @@ router.get('/', auth, async (req, res) => {
         uploads, 
         messages 
       });
+    } else {
+      // Guest access: show all uploads but no private messages or upload forms
+      const uploads = await Upload.find()
+        .populate('userId', 'username')
+        .sort({ createdAt: -1 });
+        
+      res.render('user-dashboard', { 
+        user: null, 
+        uploads, 
+        messages: [] 
+      });
     }
   } catch (error) {
+    console.error('Dashboard Error:', error);
     res.status(500).render('error', { message: 'Dashboard error' });
   }
 });
+
 
 export default router;
