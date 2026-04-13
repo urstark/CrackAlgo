@@ -1,11 +1,11 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { username, email, password, isAdmin } = req.body;
     
@@ -37,7 +37,7 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     
@@ -60,9 +60,7 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (req, res) => {
+export const logout = (req, res) => {
   res.clearCookie('token');
   res.redirect('/login');
-};
-
-module.exports = { register, login, logout };
+};

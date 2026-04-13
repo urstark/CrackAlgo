@@ -1,7 +1,7 @@
-const Message = require('../models/Message');
-const User = require('../models/User');
+import Message from '../models/Message.js';
+import User from '../models/User.js';
 
-const sendMessage = async (req, res) => {
+export const sendMessage = async (req, res) => {
   try {
     const { receiverId, message } = req.body;
     
@@ -23,7 +23,7 @@ const sendMessage = async (req, res) => {
   }
 };
 
-const getUserMessages = async (req, res) => {
+export const getUserMessages = async (req, res) => {
   try {
     const messages = await Message.find({ receiverId: req.user._id })
       .populate('senderId', 'username')
@@ -35,7 +35,7 @@ const getUserMessages = async (req, res) => {
   }
 };
 
-const getAllMessages = async (req, res) => {
+export const getAllMessages = async (req, res) => {
   try {
     const messages = await Message.find()
       .populate('senderId', 'username')
@@ -47,5 +47,3 @@ const getAllMessages = async (req, res) => {
     res.status(400).json({ message: 'Failed to fetch messages' });
   }
 };
-
-module.exports = { sendMessage, getUserMessages, getAllMessages };

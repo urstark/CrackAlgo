@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const uploadSchema = new mongoose.Schema({
   userId: {
@@ -35,4 +35,4 @@ const uploadSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Upload', uploadSchema);
+export default mongoose.model('Upload', uploadSchema);

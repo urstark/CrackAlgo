@@ -1,8 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const path = require('path');
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -23,10 +27,15 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/project-d
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/', require('./routes/auth'));
-app.use('/upload', require('./routes/upload'));
-app.use('/message', require('./routes/message'));
-app.use('/dashboard', require('./routes/dashboard'));
+import authRoutes from './routes/auth.js';
+import uploadRoutes from './routes/upload.js';
+import messageRoutes from './routes/message.js';
+import dashboardRoutes from './routes/dashboard.js';
+
+app.use('/', authRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/message', messageRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
@@ -45,5 +54,3 @@ app.use((req, res) => {
 });
 
 export default app;
-
-});

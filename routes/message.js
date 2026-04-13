@@ -1,8 +1,8 @@
-const express = require('express');
-const multer = require('multer');
-const { auth, adminAuth } = require('../middleware/auth');
-const { sendMessage, getUserMessages, getAllMessages } = require('../controllers/messageController');
-const Message = require('../models/Message');
+import express from 'express';
+import multer from 'multer';
+import { auth, adminAuth } from '../middleware/auth.js';
+import { sendMessage, getUserMessages, getAllMessages } from '../controllers/messageController.js';
+import Message from '../models/Message.js';
 
 const router = express.Router();
 
@@ -30,4 +30,4 @@ router.get('/conversation/:userId', adminAuth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

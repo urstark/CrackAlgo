@@ -1,8 +1,8 @@
-const express = require('express');
-const { auth } = require('../middleware/auth');
-const User = require('../models/User');
-const Upload = require('../models/Upload');
-const Message = require('../models/Message');
+import express from 'express';
+import { auth } from '../middleware/auth.js';
+import User from '../models/User.js';
+import Upload from '../models/Upload.js';
+import Message from '../models/Message.js';
 
 const router = express.Router();
 
@@ -35,4 +35,4 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

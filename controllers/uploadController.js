@@ -1,8 +1,8 @@
-const Upload = require('../models/Upload');
-const path = require('path');
-const fs = require('fs');
+import Upload from '../models/Upload.js';
+import path from 'path';
+import fs from 'fs';
 
-const uploadFile = async (req, res) => {
+export const uploadFile = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
@@ -24,7 +24,7 @@ const uploadFile = async (req, res) => {
   }
 };
 
-const getUserUploads = async (req, res) => {
+export const getUserUploads = async (req, res) => {
   try {
     const uploads = await Upload.find({ userId: req.user._id })
       .sort({ createdAt: -1 });
@@ -35,7 +35,7 @@ const getUserUploads = async (req, res) => {
   }
 };
 
-const getAllUploads = async (req, res) => {
+export const getAllUploads = async (req, res) => {
   try {
     const uploads = await Upload.find()
       .populate('userId', 'username email')
@@ -46,5 +46,3 @@ const getAllUploads = async (req, res) => {
     res.status(400).json({ message: 'Failed to fetch uploads' });
   }
 };
-
-module.exports = { uploadFile, getUserUploads, getAllUploads };
