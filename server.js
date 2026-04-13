@@ -22,9 +22,16 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/project-dashboard')
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/project-dashboard';
+if (!process.env.MONGODB_URI) {
+  console.warn('WARNING: MONGODB_URI environment variable is not defined. Falling back to localhost (will fail on Vercel).');
+}
+
+mongoose.connect(mongoURI)
+.then(() => console.log('Successfully connected to MongoDB'))
+.catch(err => {
+  console.error('CRITICAL: MongoDB connection error:', err.message);
+});
 
 // Routes
 import authRoutes from './routes/auth.js';
